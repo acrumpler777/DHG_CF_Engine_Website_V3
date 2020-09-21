@@ -12,7 +12,7 @@ import csv
 from django.http import HttpResponse
 from django.contrib.staticfiles.storage import staticfiles_storage
 import ctypes
-import tinycc
+from tinycc import compile
 
 # Create your views here.
 @login_required(login_url='login')
@@ -114,7 +114,7 @@ def exportindividualcf(request, pk):
                          'Expected_Cash_Flows', 'PV_Cash_Flows'])
 
     summary = pd.read_csv("media/BankValuationTest.txt_Output.txt", sep='\t')  # make dynamic later
-    print(summary)
+
     cashflow = summary[summary['Note_Number'] == pk]
     for row in cashflow.values:
         writer.writerows([row])
@@ -129,9 +129,7 @@ def loanupload(request):
         if form.is_valid():
             form.save()
             filetxt = form.cleaned_data['filetxt']
-
-            import ctypes
-
+            dll_path = compile("cash_flow_engine/calculation.c")
             _libfib = ctypes.CDLL('cash_flow_engine/calculation.dll')
 
             def c_calculation():
