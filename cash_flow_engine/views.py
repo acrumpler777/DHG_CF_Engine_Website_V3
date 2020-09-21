@@ -132,7 +132,7 @@ def loanupload(request):
 
             import ctypes
 
-            _libfib = ctypes.CDLL('./cash_flow_engine/calculation.dll')
+            _libfib = ctypes.CDLL('cash_flow_engine/calculation.dll')
 
             def c_calculation():
                 return _libfib.main(ctypes.c_int())
